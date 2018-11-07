@@ -22,13 +22,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - devportal-rubygems-v1-{{ checksum "Gemfile.lock" }}
-            - devportal-rubygems-v1-fallback
+            - docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
+            - docs-rubygems-v1-fallback
       - run:
           name: Bundle Install
           command: bundle install
       - save_cache:
-          key: devportal-rubygems-v1-{{ checksum "Gemfile.lock" }}
+          key: docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
       - run:
@@ -52,17 +52,17 @@ jobs:
           fingerprints:
             - "86:c0:33:4a:f5:8c:ae:75:b8:f6:1f:38:bf:91:cf:e8"
       - run:
-          name: Download ePages Docs
+          name: Download ePages Devportal
           command: git clone git@github.com:ePages-de/epages-devportal.git ~/repo -b master
       - restore_cache:
           keys:
-            - docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
-            - docs-rubygems-v1-fallback
+            - devportal-rubygems-v1-{{ checksum "Gemfile.lock" }}
+            - devportal-rubygems-v1-fallback
       - run:
           name: Bundle Install
           command: bundle install
       - save_cache:
-          key: docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
+          key: devportal-rubygems-v1-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
       - run:
@@ -111,7 +111,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "master" ]
             then
               echo 'export ENVIRONMENT=production' >> $BASH_ENV
-            elif [ $CIRCLE_BRANCH = "develop" ]
+            elif [ $CIRCLE_BRANCH = "staging" ]
             then
               echo 'export ENVIRONMENT=development' >> $BASH_ENV
             fi
