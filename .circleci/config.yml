@@ -50,56 +50,34 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "30:34:d6:ea:4b:89:80:cf:c4:91:bd:8d:92:42:7d:97"
-      # - run: |
-      #     echo $CHECKOUT_KEY
-      #     set -e
-      #
-      #     if [ "${HOME}" = "/" ]
-      #     then
-      #       export HOME=$(getent passwd $(id -un) | cut -d: -f6)
-      #     fi
-      #
-      #     mkdir -p ~/.ssh
-      #
-      #     echo 'github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
-      #     bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
-      #     ' >> ~/.ssh/known_hosts
-      #
-      #     (umask 077; touch ~/.ssh/id_rsa)
-      #     chmod 0600 ~/.ssh/id_rsa
-      #     (cat <<EOF > ~/.ssh/id_rsa
-      #     $CHECKOUT_KEY
-      #     EOF
-      #     )
-      #
-      #     git config --global url."ssh://git@github.com".insteadOf "https://github.com" || true
+      - run: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run:
           name: Download ePages Docs
           command: git clone git@github.com:ePages-de/epages-devportal.git ~/repo -b master
-      # - restore_cache:
-      #     keys:
-      #       - docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
-      #       - docs-rubygems-v1-fallback
-      # - run:
-      #     name: Bundle Install
-      #     command: bundle install
-      # - save_cache:
-      #     key: docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
-      #     paths:
-      #       - vendor/bundle
-      # - run:
-      #     name: Jekyll build
-      #     command: bundle exec jekyll build
-      # - run:
-      #     name: Test
-      #     command: bundle exec rake test_ci
-      # - run:
-      #     name: Update folder name
-      #     command: mv _site _devportal
-      # - persist_to_workspace:
-      #     root: ./
-      #     paths:
-      #       - ./_devportal
+      - restore_cache:
+          keys:
+            - docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
+            - docs-rubygems-v1-fallback
+      - run:
+          name: Bundle Install
+          command: bundle install
+      - save_cache:
+          key: docs-rubygems-v1-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Jekyll build
+          command: bundle exec jekyll build
+      - run:
+          name: Test
+          command: bundle exec rake test_ci
+      - run:
+          name: Update folder name
+          command: mv _site _devportal
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./_devportal
 
   combine_projets:
     working_directory: ~/repo
@@ -148,24 +126,24 @@ workflows:
   version: 2
   build_test_deploy:
     jobs:
-      # - build_test_docs
+      - build_test_docs
       - build_test_devportal:
           filters:
             branches:
               only:
                 - staging
-      # - combine_projets:
-      #     requires:
-      #       - build_test_docs
-      #       - build_test_devportal
-      #     filters:
-      #       branches:
-      #         only:
-      #           - staging
-      # - deploy_firebase:
-      #     requires:
-      #       - combine_projets
-      #     filters:
-      #       branches:
-      #         only:
-      #           - staging
+      - combine_projets:
+          requires:
+            - build_test_docs
+            - build_test_devportal
+          filters:
+            branches:
+              only:
+                - staging
+      - deploy_firebase:
+          requires:
+            - combine_projets
+          filters:
+            branches:
+              only:
+                - staging
