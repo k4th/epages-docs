@@ -47,12 +47,9 @@ jobs:
   build_test_devportal:
     <<: *devportal_defaults
     steps:
-      - checkout
-      - run: pwd
-      - run: ls -lash
-      - run: mkdir repoa
-      - run: cd repoa
-      - run: pwd
+      - add_ssh_keys:
+          fingerprints:
+            - "30:34:d6:ea:4b:89:80:cf:c4:91:bd:8d:92:42:7d:97"
       # - run: |
       #     echo $CHECKOUT_KEY
       #     set -e
