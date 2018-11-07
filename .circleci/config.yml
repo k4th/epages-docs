@@ -145,24 +145,24 @@ workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - build_test_docs
+      # - build_test_docs
       - build_test_devportal:
           filters:
             branches:
               only:
                 - staging
-      - combine_projets:
-          requires:
-            - build_test_docs
-            - build_test_devportal
-          filters:
-            branches:
-              only:
-                - staging
-      - deploy_firebase:
-          requires:
-            - combine_projets
-          filters:
-            branches:
-              only:
-                - staging
+      # - combine_projets:
+      #     requires:
+      #       - build_test_docs
+      #       - build_test_devportal
+      #     filters:
+      #       branches:
+      #         only:
+      #           - staging
+      # - deploy_firebase:
+      #     requires:
+      #       - combine_projets
+      #     filters:
+      #       branches:
+      #         only:
+      #           - staging
