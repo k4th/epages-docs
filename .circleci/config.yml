@@ -50,7 +50,7 @@ jobs:
       - run: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - add_ssh_keys:
           fingerprints:
-            - "30:34:d6:ea:4b:89:80:cf:c4:91:bd:8d:92:42:7d:97"
+            - "86:c0:33:4a:f5:8c:ae:75:b8:f6:1f:38:bf:91:cf:e8"
       - run:
           name: Download ePages Docs
           command: git clone git@github.com:ePages-de/epages-devportal.git ~/repo -b master
