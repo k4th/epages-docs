@@ -48,6 +48,7 @@ jobs:
     <<: *devportal_defaults
     steps:
       - run: |
+          echo $CHECKOUT_KEY
           set -e
 
           if [ "${HOME}" = "/" ]
