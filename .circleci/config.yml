@@ -50,7 +50,8 @@ jobs:
       - checkout
       - run: pwd
       - run: ls -lash
-      - run: rm -rf /home/circleci/repo/*
+      - run: rm -rf /home/circleci/repo
+      - run: mkdir repo
       - run: ls -lash
       # - run: |
       #     echo $CHECKOUT_KEY
