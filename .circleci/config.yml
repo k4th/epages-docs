@@ -48,6 +48,7 @@ jobs:
     <<: *devportal_defaults
     steps:
       - checkout
+      - run: pwd
       - run: ls -lash
       # - run: |
       #     echo $CHECKOUT_KEY
