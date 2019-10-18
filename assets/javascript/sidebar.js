@@ -10,7 +10,7 @@ $(document).ready(function() {
         $('svg', this).removeClass('fa-caret-down').addClass('fa-caret-up');
       }
     }
-  })
+  });
   $('li.sitemap-entry, li.sitemap-entry-expand').click(function() {
     $('li.sitemap-entry').removeClass('active');
     $('li.sitemap-entry-expand.active').removeClass('active');
@@ -21,6 +21,20 @@ $(document).ready(function() {
 function changeSiteMap(element) {
   nextElement = $(element).next();
   if($('svg', element).first().hasClass('fa-caret-down')) {
+    if ($('.fa-caret-up').length > 0) {
+      if ($(element).siblings('.sitemap-content-expand--open').length > 0) {
+        prev = $(element).siblings('.sitemap-content-expand--open').first().prev();
+        svg = $('svg', prev);
+      } else {
+        if (!$(element).parent().hasClass('sitemap-content-expand--open')) {
+          svg = $('.fa-caret-up');
+        }
+      }
+      if (svg) {
+        svg.removeClass('fa-caret-up').addClass('fa-caret-down');
+        svg.parent().next().slideUp().removeClass('sitemap-content-expand--open').addClass('sitemap-content-expand--close');
+      }
+    }
     $('svg', element).first().removeClass('fa-caret-down').addClass('fa-caret-up');
     $(nextElement).slideDown().removeClass('sitemap-content-expand--close').addClass('sitemap-content-expand--open');
   } else {
